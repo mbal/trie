@@ -16,6 +16,10 @@
     (define trie (mk-trie))
     (insert-string! "string" trie)
     (assert (equal? #t (search-string "string" trie)))
+    (assert (equal? #t (prefix-string? "string" trie)))
+    (assert (equal? #f (search-string "str" trie)))
+    (assert (equal? #t (prefix-string? "str" trie)))
+    (assert (equal? #f (prefix-string? "stra" trie)))
     (assert (equal? #f (search-string "string " trie)))
     (assert (equal? #f (search-string "notpresent" trie))))
 
@@ -39,5 +43,6 @@
     (assert (equal? #f (search '(#\n #\o #\t) trie)))
     (assert (equal? #f (search '(s t r i n g) trie)))
     (assert (equal? #t (search '(#\s #\t #\r #\i #\n #\g) trie))))
+
 )
 
