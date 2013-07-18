@@ -1,5 +1,5 @@
 (module trie (mk-trie search insert! insert-string! search-string)
-  (import chicken scheme)
+  (import scheme chicken)
 
   (define-record trie content children)
 
@@ -12,15 +12,15 @@
   ;; search :: List[A] -> Trie[A] -> Bool
   ;; search an element in a trie. The element should be a list of
   ;; what's saved in the trie. Returns #t or #f.
-  (define (search list trie)
-    (cond ((and (null? (trie-children trie)) (null? list)) #t)
+  (define (search lst trie)
+    (cond ((and (null? (trie-children trie)) (null? lst)) #t)
           ((null? (trie-children trie)) #f)
-          ((null? list) #t)
+          ((null? lst) #t)
           (else
             (let loop ((xs (trie-children trie)))
               (cond ((null? xs) #f)
-                    ((equal? (trie-content (car xs)) (car list))
-                     (search (cdr list) (car xs)))
+                    ((equal? (trie-content (car xs)) (car lst))
+                     (search (cdr lst) (car xs)))
                     (else (loop (cdr xs))))))))
 
   ;; add-child! :: Trie[A] -> A -> Trie[A]
@@ -32,8 +32,8 @@
       (trie-children-set! new-node (list))
       new-node))
 
-  ;; search-ref-same-level :: A -> [Trie[A]] -> Trie[A] | Nil
-  ;; search in a list of children the (only) which has the given
+  ;; search-ref-same-level :: A -> List[Trie[A]] -> Trie[A] | Nil
+  ;; search in a list of children the (only) node that has the given
   ;; content. If there isn't such element, returns '()
   (define (search-ref-same-level element trie-children-list)
     (cond ((null? trie-children-list) '())
@@ -42,6 +42,7 @@
           (else (search-ref-same-level element (cdr trie-children-list)))))
 
   ;; insert! :: List[A] -> Trie[A] -> #t
+  ;; inserts the given element in the trie. Returns #t
   (define (insert! lst trie)
     (cond ((null? lst) #t)
           ((null? (trie-children trie)) 
