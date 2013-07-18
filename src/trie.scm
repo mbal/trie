@@ -68,11 +68,9 @@
   ;; returns a copy of the trie. The copy doesn't share any structure
   ;; with the original.
   (define (copy-trie t)
-    (if (null? (trie-children t))
-      (make-trie (trie-content t) '())
-      (make-trie (trie-content t) 
-                 (map (lambda (x) (copy-trie x))
-                      (trie-children t)))))
+    (make-trie (trie-content t) 
+               (map (lambda (x) (copy-trie x))
+                    (trie-children t))))
 
   (define (listify x)
     (if (list? x) x (list x)))
