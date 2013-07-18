@@ -7,10 +7,11 @@
   (define-record trie content children)
 
   ;; a MUTABLE implementation of tries.
-  ;; deletion from a trie is tricky.
 
   ;; mk-trie :: Trie[A]
-  ;; creates an empty trie
+  ;; creates an empty trie. Notice that, using Chicken's record
+  ;; the only way to create a trie is to create it empty and
+  ;; fill it on demand.
   (define (mk-trie) (make-trie (list) (list)))
 
   ;; search :: List[A] -> Trie[A] -> Bool
@@ -63,12 +64,20 @@
                      (subtrie (cdr lst) (car xs)))
                     (else (loop (cdr xs))))))))
 
-  (define (copy-trie t) t)
+  ;; copy-trie :: Trie[A] -> Trie[A]
+  ;; returns a copy of the trie. The copy doesn't share any structure
+  ;; with the original.
+  (define (copy-trie t)
+    (if (null? (trie-children t))
+      (make-trie (trie-content t) '())
+      (make-trie (trie-content t) 
+                 (map (lambda (x) (copy-trie x))
+                      (trie-children t)))))
 
   (define (listify x)
     (if (list? x) x (list x)))
 
-  ;; trie->list :: Trie[A] -> [[A]]
+  ;; trie->list :: Trie[A] -> List[List[A]]
   ;; returns a list of all the content of the trie.
   ;; Example: the trie contains "str" and "tst"
   ;; trie->list will return ((#\t #\s #\t) (#\s #\t #\r))
