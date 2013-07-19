@@ -49,18 +49,21 @@
   ;; the subtrie should be a copy (if true) or a part of the 
   ;; original trie (if false), defaults to #t.
   (define (subtrie lst trie . copy)
-    (cond ((and (null? (trie-children trie)) (null? lst)) '())
-          ((null? (trie-children trie)) #f)
-          ((null? lst) 
-           (if (optional copy #t)
-             (copy-trie trie)
-             trie))
-          (else
-            (let loop ((xs (trie-children trie)))
-              (cond ((null? xs) #f)
-                    ((equal? (trie-content (car xs)) (car lst))
-                     (subtrie (cdr lst) (car xs)))
-                    (else (loop (cdr xs))))))))
+    (let subtrie-helper ((lst lst) (trie trie) (copy (optional copy #t)))
+      (cond ((and (null? (trie-children trie)) (null? lst)) '())
+            ((null? (trie-children trie)) #f)
+            ((null? lst) 
+             (if copy
+               (copy-trie trie)
+               trie))
+            (else
+              ;; search for the right subtrie
+              (let loop ((xs (trie-children trie)))
+                (cond ((null? xs) #f)
+                      ((equal? (trie-content (car xs)) (car lst))
+                       (subtrie-helper (cdr lst) (car xs) copy))
+                      (else (loop (cdr xs)))))))))
+
 
   ;; copy-trie :: Trie[A] -> Trie[A]
   ;; returns a copy of the trie. The copy doesn't share any structure
@@ -121,7 +124,7 @@
   ;; some convenience function to insert/search/... strings in the trie
   ;; (FUNCTION-string str trie) is equivalent to 
   ;; (FUNCTION (string-> list str) trie)
- 
+
   ;; insert-string! :: String -> Trie[Char] -> #t
   (define (insert-string! str trie)
     (insert! (string->list str) trie))
@@ -135,4 +138,4 @@
 
   (define (subtrie-string str trie . copy)
     (subtrie (string->list str) trie (optional copy #t)))
-)
+  )
