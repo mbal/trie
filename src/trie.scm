@@ -9,9 +9,7 @@
   ;; a MUTABLE implementation of tries.
 
   ;; mk-trie :: Trie[A]
-  ;; creates an empty trie. Notice that, using Chicken's record
-  ;; the only way to create a trie is to create it empty and
-  ;; fill it on demand.
+  ;; creates an empty trie. 
   (define (mk-trie) (make-trie (list) (list)))
 
   ;; search :: List[A] -> Trie[A] -> Bool
