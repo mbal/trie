@@ -91,11 +91,10 @@
 
   ;; add-child! :: Trie[A] -> A -> Trie[A]
   ;; returns a modified trie, with the given element added as child
+  ;; the only mutations to the structure are performed here.
   (define (add-child! position content)
-    (let ((new-node (mk-trie)))
+    (let ((new-node (make-trie content (list))))
       (trie-children-set! position (cons new-node (trie-children position)))
-      (trie-content-set! new-node content)
-      (trie-children-set! new-node (list))
       new-node))
 
   ;; search-ref-same-level :: A -> List[Trie[A]] -> Trie[A] | Nil
@@ -123,7 +122,7 @@
 
   ;; some convenience function to insert/search/... strings in the trie
   ;; (FUNCTION-string str trie) is equivalent to 
-  ;; (FUNCTION (string-> list str) trie)
+  ;; (FUNCTION (string->list str) trie)
 
   ;; insert-string! :: String -> Trie[Char] -> #t
   (define (insert-string! str trie)
