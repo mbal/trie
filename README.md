@@ -49,7 +49,7 @@ list:
     (insert-string! STR TRIE)
     (search-string STR TRIE)
     (prefix-string? STR TRIE)
-    (subtrie STR TRIE (COPY #t))
+    (subtrie-string STR TRIE (COPY #t))
 
 Tests
 -----
